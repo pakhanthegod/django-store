@@ -1,0 +1,6 @@
+**/__pycache__
+**/js/*.js
+.env
+.vscode
+
+db.sqlite3

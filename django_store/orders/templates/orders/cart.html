@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if request.session.cart %}
+        <ul>
+            {% for product_tuple in cart_products %}
+                <li>{{ product_tuple.0 }} - {{ product_tuple.1 }} <a href="{% url 'orders:delete_from_cart' product_tuple.0.id %}">Удалить</a></li>
+            {% endfor %}
+        </ul>
+        <a href="{% url 'orders:create_order' %}"><Button>Сделать заказ</Button></a>
+    {% else %}
+        <p>Ваша корзина пуста</p>
+    {% endif %}
+
+{% endblock %}
