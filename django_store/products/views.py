@@ -20,6 +20,10 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
     def get_queryset(self):
         queryset = super().get_queryset()
         category = self.kwargs.get('category', 't-shirt')
+        search_query = self.request.GET.get('search', '')
+
+        if search_query:
+            return queryset.filter(name__istartswith=search_query)
 
         return queryset.filter(category__slug=category)
 
