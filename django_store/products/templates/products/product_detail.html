@@ -1,12 +1,28 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <ul>
-        <li>{{ object.name }}</li>
-        <li>{{ object.description }}</li>
-        <li>{{ object.category }}</li>
-        <li>{{ object.brand }}</li>
-        <li>{{ object.price }}</li>
-        <li>{{ object.available }}</li>
+    <ul class="list-group">
+        <li class="list-group-item border-0">
+            {{ object.name }}
+        </li>
+        <li class="list-group-item border-0">
+            {{ object.description }}
+        </li>
+        <li class="list-group-item border-0">
+            {{ object.category }}
+        </li>
+        <li class="list-group-item border-0">
+            {{ object.brand }}
+        </li>
+        <li class="list-group-item border-0">
+            {{ object.price }}
+        </li>
+        <li class="list-group-item border-0">
+            {% if object.available %}
+                Есть на складе
+            {% else %}
+                Нет на складе
+            {% endif %}
+        </li>
     </ul>
 {% endblock %}

@@ -5,7 +5,7 @@ from django.views.generic.edit import View, FormMixin, TemplateResponseMixin
 from django.contrib.auth.forms import UserCreationForm
 
 from .models import User, Customer
-from .forms import UserForm
+from .forms import UserForm, UserAuthentication
 
 
 class UserCreate(View, TemplateResponseMixin, FormMixin):
@@ -30,6 +30,7 @@ class UserCreate(View, TemplateResponseMixin, FormMixin):
 
 
 class UserLogin(LoginView):
+    form_class = UserAuthentication
     template_name = 'profiles\\user_login.html'
 
 
