@@ -20,7 +20,7 @@ class AddToCart(LoginRequiredMixin, View):
             cart[product_id] = 1
         request.session['cart'] = cart
 
-        messages.success(request, 'Item is added')
+        messages.success(request, 'Товар добавлен')
 
         return redirect(request.GET.get('from', 'products:product_list'))
 
@@ -36,7 +36,7 @@ class DeleteFromCart(LoginRequiredMixin, View):
             del cart[product_id]
         request.session['cart'] = cart
 
-        messages.success(request, 'Item is deleted')
+        messages.success(request, 'Товар удален')
 
         return redirect('orders:cart')
 
@@ -96,6 +96,6 @@ class CreateOrderView(LoginRequiredMixin, View):
 
         del request.session['cart']
 
-        messages.success(request, 'Your order is created')
+        messages.success(request, 'Ваш заказ оформлен')
 
         return redirect('products:product_list')

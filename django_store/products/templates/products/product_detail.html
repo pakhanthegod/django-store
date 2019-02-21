@@ -1,28 +1,54 @@
-{% extends 'base.html' %}
+{% extends 'base_one_column.html' %}
 
 {% block content %}
-    <ul class="list-group">
-        <li class="list-group-item border-0">
-            {{ object.name }}
-        </li>
-        <li class="list-group-item border-0">
-            {{ object.description }}
-        </li>
-        <li class="list-group-item border-0">
-            {{ object.category }}
-        </li>
-        <li class="list-group-item border-0">
-            {{ object.brand }}
-        </li>
-        <li class="list-group-item border-0">
-            {{ object.price }}
-        </li>
-        <li class="list-group-item border-0">
-            {% if object.available %}
-                Есть на складе
-            {% else %}
-                Нет на складе
-            {% endif %}
-        </li>
-    </ul>
+    <div class="row">
+        <div class="col-md-5">
+            <h4>Изображение</h4>
+            <img src={{ object.image.url }} class="img-thumbnail" style="max-width: 300px; height: auto;">
+        </div>
+        <div class="col-md-7">
+            <h4>Описание</h4>
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>Название</td>
+                    <td>{{ object.name }}</td>
+                </tr>
+                <tr>
+                    <td>Категория</td>
+                    <td> {{ object.category }}</td>
+                </tr>
+                <tr>
+                    <td>Производитель</td>
+                    <td>{{ object.brand }}</td>
+                </tr>
+                <tr>
+                    <td>Описание</td>
+                    <td>{{ object.description }}</td>
+                </tr>
+                <tr>
+                    <td>Цена</td>
+                    <td>{{ object.price }}</td>
+                </tr>
+                <tr>
+                    <td>Доступен</td>
+                    <td>
+                        {% if object.available %}
+                            Есть на складе
+                        {% else %}
+                            Нет на складе
+                        {% endif %}
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        {% if user.is_authenticated %}
+            <div class="col text-center">
+                <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary">Добавить в корзину</a>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}

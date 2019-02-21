@@ -35,7 +35,9 @@ class Product(models.Model):
     category = models.ForeignKey(verbose_name=_('Категория'), to=Category, on_delete=models.PROTECT)
     brand = models.ForeignKey(verbose_name=_('Производитель'), to=Brand, on_delete=models.PROTECT)
     price = models.DecimalField(_('Цена'), max_digits=10, decimal_places=2)
+    quantity = models.IntegerField(_('Количество'), default=20)
     available = models.BooleanField(_('Доступен'), default=True)
+    image = models.ImageField(_('Изображение'), upload_to='products')
 
     class Meta:
         verbose_name = 'Товар'

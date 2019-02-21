@@ -6,14 +6,18 @@ from products.models import Product
 
 
 class Order(models.Model):
+    ORDER_PROCESS = 'process'
+    ORDER_SHIPPED = 'shipped'
+    ORDER_DELIVERED = 'delivered'
+
     ORDER_STATUS_CHOICES = (
-        ('process', 'Обрабатывается'),
-        ('shipped', 'Отправлено', ),
-        ('delivered', 'Доставлено'),
+        (ORDER_PROCESS, 'Обрабатывается'),
+        (ORDER_SHIPPED, 'Отправлено', ),
+        (ORDER_DELIVERED, 'Доставлено'),
     )
 
     customer = models.ForeignKey(verbose_name=_('Покупатель'), to=Customer, on_delete=models.CASCADE)
-    order_status = models.CharField(_('Статус'), max_length=20, default=ORDER_STATUS_CHOICES[0][0], choices=ORDER_STATUS_CHOICES)
+    order_status = models.CharField(_('Статус'), max_length=20, default=ORDER_PROCESS, choices=ORDER_STATUS_CHOICES)
     order_date = models.DateTimeField(_('Дата заказа'), auto_now_add=True)
     products = models.ManyToManyField(verbose_name=_('Товары'), to=Product, through='OrderList')
 
