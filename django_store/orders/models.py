@@ -28,6 +28,14 @@ class Order(models.Model):
     def __str__(self):
         return str(self.id)
 
+    def get_total(self):
+        total = 0
+        
+        for ol in self.orderlist_set.all():
+            total += ol.get_sum()
+        
+        return total
+
 
 class OrderList(models.Model):
     order = models.ForeignKey(verbose_name=_('Заказ'), to=Order, on_delete=models.CASCADE)
@@ -37,3 +45,6 @@ class OrderList(models.Model):
     class Meta:
         verbose_name = 'Товары заказа'
         verbose_name_plural = 'Товары заказа'
+
+    def get_sum(self):
+        return self.product.price * self.quantity

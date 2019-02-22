@@ -1,0 +1,37 @@
+{% extends 'base_one_column.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="offset-md-3 col-md-6">
+            <h4>Информация</h4>
+            <table class="table">
+                <tbody>
+                    <tr>
+                        <td>Аккаунт</td>
+                        <td>{{ user.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Имя</td>
+                        <td> {{ user.first_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Фамилия</td>
+                        <td>{{ user.last_name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h4>Заказы</h4>
+            <table class="table">
+                <tbody>
+                    {% for order in user.get_orders %}
+                    <tr>
+                        <td>{{ order.id }}</td>
+                        <td>{{ order.get_total }}</td>
+                        <td>{{ order.get_order_status_display }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -1,5 +1,7 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView
 from django.views.generic.edit import View, FormMixin, TemplateResponseMixin
 from django.contrib.auth.forms import UserCreationForm
@@ -24,6 +26,7 @@ class UserCreate(View, TemplateResponseMixin, FormMixin):
             email = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password')
             user = authenticate(request, username=email, password=raw_password)
+            print(user)
             login(request, user)
             return redirect('admin')
         return self.render_to_response({"form": form})
@@ -36,3 +39,12 @@ class UserLogin(LoginView):
 
 class UserLogout(LogoutView):
     template_name = 'profiles\\user_logout.html'
+
+
+class UserAccount(LoginRequiredMixin, View, TemplateResponseMixin):
+    model = User
+    template_name = 'profiles\\user_account.html'
+    login_url = 'profiles:login'
+    
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)

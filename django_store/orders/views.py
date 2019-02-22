@@ -9,7 +9,7 @@ from .models import Order, OrderList
 
 
 class AddToCart(LoginRequiredMixin, View):
-    redirect_field_name = 'products:product_list'
+    login_url = 'profiles:login'
 
     def get(self, request, *args, **kwargs):
         cart = request.session.get('cart', {})
@@ -26,7 +26,7 @@ class AddToCart(LoginRequiredMixin, View):
 
 
 class DeleteFromCart(LoginRequiredMixin, View):
-    redirect_field_name = 'products:product_list'
+    login_url = 'profiles:login'
     
     def get(self, request, *args, **kwargs):
         cart = request.session.get('cart')
@@ -45,7 +45,7 @@ class CartView(LoginRequiredMixin, MultipleObjectMixin, TemplateResponseMixin, V
     model = Product
     template_name = 'orders\\cart.html'
     paginate_by = 9
-    redirect_field_name = 'products:product_list'
+    login_url = 'profiles:login'
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
@@ -76,7 +76,7 @@ class CartView(LoginRequiredMixin, MultipleObjectMixin, TemplateResponseMixin, V
 
 
 class CreateOrderView(LoginRequiredMixin, View):
-    redirect_field_name = 'products:product_list'
+    login_url = 'profiles:login'
     
     def get(self, request, *args, **kwargs):
         # Populate the cart list with Product objects by IDs from the session

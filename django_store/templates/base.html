@@ -41,9 +41,9 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <span class="navbar-text">
+                        <a href="{% url 'profiles:account' %}" class="nav-link">
                             Аккаунт: {{ user.email }}
-                        </span>
+                        </a>
                     </li>
                     {% if not request.session.cart %}
                         <li class="nav-item">
