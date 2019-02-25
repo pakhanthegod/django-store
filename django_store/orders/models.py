@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import F, Sum, DecimalField
 from django.utils.translation import ugettext_lazy as _
 
 from profiles.models import Customer
@@ -29,12 +30,26 @@ class Order(models.Model):
         return str(self.id)
 
     def get_total(self):
-        total = 0
+        return (
+            self.orderlist_set
+            .all()
+            .aggregate(
+                total=Sum(F('product__price')*(F('quantity')),
+                output_field=DecimalField())
+            )['total']
+        )
+
+        """
+        Older variant:
+            total = 0
+            
+            for ol in self.orderlist_set.all():
+                total += ol.get_sum()
+            
+            return total
         
-        for ol in self.orderlist_set.all():
-            total += ol.get_sum()
-        
-        return total
+        This was replaced because database works faster than python with data (Read it from Two Scoops of Django)
+        """
 
 
 class OrderList(models.Model):
@@ -45,6 +60,3 @@ class OrderList(models.Model):
     class Meta:
         verbose_name = 'Товары заказа'
         verbose_name_plural = 'Товары заказа'
-
-    def get_sum(self):
-        return self.product.price * self.quantity
