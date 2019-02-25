@@ -22,10 +22,17 @@
             </table>
             <h4>Заказы</h4>
             <table class="table">
+                <thead>
+                    <tr>
+                        <th>Номер</th>
+                        <th>Сумма</th>
+                        <th>Статус</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {% for order in user.get_orders %}
                     <tr>
-                        <td>{{ order.id }}</td>
+                        <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
                         <td>{{ order.get_total }}</td>
                         <td>{{ order.get_order_status_display }}</td>
                     </tr>

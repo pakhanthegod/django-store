@@ -1,0 +1,35 @@
+{% extends 'base_one_column.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h4>Заказ №{{ object.pk }}</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Товар</th>
+                        <th>Количество</th>
+                        <th>Цена</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order_item in object.orderlist_set.all %}
+                        <tr>
+                            <td><a href="{{ order_item.product.get_absolute_url }}">{{ order_item.product.name }}</a></td>
+                            <td>{{ order_item.quantity }}</td>
+                            <td>{{ order_item.product.price }}</td>
+                        </tr>
+                    {% endfor %}
+                    <tr>
+                        <td class="text-right" colspan="2">Сумма:</td>
+                        <td>{{ object.get_total }}</td>
+                    </tr>
+                    <tr>
+                        <td class="text-right" colspan="2">Статус:</td>
+                        <td>{{ object.get_order_status_display }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

@@ -23,9 +23,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav mr-auto">
-                {% comment %} <li class="active">
-                    <a class="nav-link" href="#">Home</a>
-                </li> {% endcomment %}
             </ul>
             <div class="form-inline my-2 mx-2 my-lg-0">
                 <input id="search" class="form-control mr-sm-2" type="search" placeholder="Поиск..." aria-label="Search">
@@ -41,9 +38,9 @@
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <span class="navbar-text">
+                        <a href="{% url 'profiles:account' %}" class="nav-link">
                             Аккаунт: {{ user.email }}
-                        </span>
+                        </a>
                     </li>
                     {% if not request.session.cart %}
                         <li class="nav-item">

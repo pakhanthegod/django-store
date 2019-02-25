@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View, TemplateResponseMixin
 from django.views.generic.list import MultipleObjectMixin
+from django.views.generic.detail import SingleObjectMixin
 
 from products.models import Product
 from .models import Order, OrderList
@@ -43,7 +45,7 @@ class DeleteFromCart(LoginRequiredMixin, View):
 
 class CartView(LoginRequiredMixin, MultipleObjectMixin, TemplateResponseMixin, View):
     model = Product
-    template_name = 'orders\\cart.html'
+    template_name = 'orders/cart.html'
     paginate_by = 9
     login_url = 'profiles:login'
 
@@ -99,3 +101,22 @@ class CreateOrderView(LoginRequiredMixin, View):
         messages.success(request, 'Ваш заказ оформлен')
 
         return redirect('products:product_list')
+
+
+class OrderDetailView(LoginRequiredMixin, SingleObjectMixin, TemplateResponseMixin, View):
+    model = Order
+    template_name = 'orders/order_detail.html'
+    login_url = 'profiles:login'
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+
+        return self.render_to_response(context)
+
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset=queryset)
+        print(obj.customer, self.request.user.customer)
+        if obj.customer != self.request.user.customer:
+            raise PermissionDenied
+        return obj

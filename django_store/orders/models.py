@@ -1,3 +1,4 @@
+from django.urls import reverse
 from django.db import models
 from django.db.models import F, Sum, DecimalField
 from django.utils.translation import ugettext_lazy as _
@@ -28,6 +29,9 @@ class Order(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    def get_absolute_url(self):
+        return reverse('orders:order_detail', kwargs={"pk": self.pk})
 
     def get_total(self):
         return (
