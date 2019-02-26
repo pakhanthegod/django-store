@@ -13,7 +13,7 @@ from .forms import UserForm, UserAuthentication
 class UserCreate(View, TemplateResponseMixin, FormMixin):
     model = User
     form_class = UserForm
-    template_name = 'profiles\\user_form.html'
+    template_name = 'profiles/user_form.html'
 
     def get(self, request, *args, **kwargs):
         form = self.form_class()
@@ -34,16 +34,16 @@ class UserCreate(View, TemplateResponseMixin, FormMixin):
 
 class UserLogin(LoginView):
     form_class = UserAuthentication
-    template_name = 'profiles\\user_login.html'
+    template_name = 'profiles/user_login.html'
 
 
 class UserLogout(LogoutView):
-    template_name = 'profiles\\user_logout.html'
+    template_name = 'profiles/user_logout.html'
 
 
 class UserAccount(LoginRequiredMixin, View, TemplateResponseMixin):
     model = User
-    template_name = 'profiles\\user_account.html'
+    template_name = 'profiles/user_account.html'
     login_url = 'profiles:login'
     
     def get(self, request, *args, **kwargs):

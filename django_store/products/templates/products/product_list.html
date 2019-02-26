@@ -1,37 +1,41 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
-{% block sidebar %}
-    <div class="list-group">
-        {% for category in categories %}
-            <a href="{{ category.get_absolute_url }}" class="list-group-item list-group-item-action">{{ category }}</a>
-        {% endfor %}
-    </div>
-{% endblock %}
-
 {% block content %}
-    {% for product in object_list %}
-        {% if forloop.first %}
-            <div class="card-columns">
-        {% endif %}
-        <a href="{% url 'products:product_detail' product.category.slug product.id %}">
-            <div class="card" style="width: 18rem;">
-                <img src="{{ product.image.url }}" class="card-img-top mx-auto d-block" alt="..."  style="max-width: 300px; height: auto;">
-                <div class="card-body">
-                    <h5 class="card-title">{{ product.name }}</h5>
-                    <p class="card-text">{{ product.description }}</p>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary">Добавить в корзину</a>
-                    {% endif %}
-                </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="list-group">
+                <a href="{% url 'products:product_list_all' %}" class="list-group-item list-group-item-action">Все</a>
+                {% for category in categories %}
+                    <a href="{{ category.get_absolute_url }}" class="list-group-item list-group-item-action">{{ category }}</a>
+                {% endfor %}
             </div>
-        </a>
-        {% if forloop.counter|divisibleby:3 %}
-            </div>
-            <div class="card-columns">
-        {% endif %}
-        {% if forloop.last %}
-            </div>
-        {% endif %}
-    {% endfor %}
+        </div>
+        <div class="col-md-9">
+            {% for product in object_list %}
+                {% if forloop.first %}
+                    <div class="card-columns">
+                {% endif %}
+                <a href="{% url 'products:product_detail' product.category.slug product.id %}">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ product.image.url }}" class="card-img-top mx-auto d-block" alt="..."  style="max-width: 300px; height: auto;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">Цена: {{ product.price }} &#8381;</p>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary">Добавить в корзину</a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+                {% if forloop.counter|divisibleby:3 %}
+                    </div>
+                    <div class="card-columns">
+                {% endif %}
+                {% if forloop.last %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

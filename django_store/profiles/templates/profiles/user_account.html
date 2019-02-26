@@ -1,4 +1,4 @@
-{% extends 'base_one_column.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <div class="row">
@@ -12,7 +12,7 @@
                     </tr>
                     <tr>
                         <td>Имя</td>
-                        <td> {{ user.first_name }}</td>
+                        <td>{{ user.first_name }}</td>
                     </tr>
                     <tr>
                         <td>Фамилия</td>
@@ -21,24 +21,30 @@
                 </tbody>
             </table>
             <h4>Заказы</h4>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Номер</th>
-                        <th>Сумма</th>
-                        <th>Статус</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for order in user.get_orders %}
-                    <tr>
-                        <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
-                        <td>{{ order.get_total }}</td>
-                        <td>{{ order.get_order_status_display }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+            {% with orders=user.get_orders %}
+                {% if orders %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td><a href="{{ order.get_absolute_url }}">{{ order.id }}</a></td>
+                                <td>{{ order.get_total }}</td>
+                                <td>{{ order.get_order_status_display }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>У вас еще нет заказов.</p>
+                {% endif %}
+            {% endwith %}
         </div>
     </div>
 {% endblock %}

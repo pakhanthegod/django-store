@@ -24,7 +24,7 @@ class AddToCart(LoginRequiredMixin, View):
 
         messages.success(request, 'Товар добавлен')
 
-        return redirect(request.GET.get('from', 'products:product_list'))
+        return redirect(request.GET.get('from', 'products:product_list_all'))
 
 
 class DeleteFromCart(LoginRequiredMixin, View):
@@ -100,7 +100,7 @@ class CreateOrderView(LoginRequiredMixin, View):
 
         messages.success(request, 'Ваш заказ оформлен')
 
-        return redirect('products:product_list')
+        return redirect('products:product_list_all')
 
 
 class OrderDetailView(LoginRequiredMixin, SingleObjectMixin, TemplateResponseMixin, View):

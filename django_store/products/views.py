@@ -8,7 +8,7 @@ from .models import Product, Category
 
 class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
     model = Product
-    template_name = 'products\\product_list.html'
+    template_name = 'products/product_list.html'
     paginate_by = 9
 
     def get(self, request, *args, **kwargs):
@@ -19,11 +19,14 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        category = self.kwargs.get('category', 't-shirt')
+        category = self.kwargs.get('category', '')
         search_query = self.request.GET.get('search', '')
 
         if search_query:
             return queryset.filter(name__istartswith=search_query)
+
+        if not category:
+            return queryset
 
         return queryset.filter(category__slug=category)
 
@@ -36,7 +39,7 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
 
 class ProductDetailView(SingleObjectMixin, TemplateResponseMixin, View):
     model = Product
-    template_name = 'products\\product_detail.html'
+    template_name = 'products/product_detail.html'
     
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()

@@ -1,15 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% if request.session.cart %}
-        <ul>
-            {% for product_tuple in cart_products %}
-                <li>{{ product_tuple.0 }} - {{ product_tuple.1 }} <a href="{% url 'orders:delete_from_cart' product_tuple.0.id %}">Удалить</a></li>
-            {% endfor %}
-        </ul>
-        <a href="{% url 'orders:create_order' %}"><Button>Сделать заказ</Button></a>
-    {% else %}
-        <p>Ваша корзина пуста</p>
-    {% endif %}
-
+    <div class="row">
+        <div class="col">
+            <h4>Коризна</h4>
+            {% if request.session.cart %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Товар</th>
+                            <th>Количество</th>
+                            <th>Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product_tuple in cart_products %}
+                            <tr>
+                                <td><a href="{{ order_item.product.get_absolute_url }}">{{ product_tuple.0 }}</a></td>
+                                <td>{{ product_tuple.1 }}</td>
+                                <td>{{ product_tuple.0.price }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Ваша корзина пуста</p>
+            {% endif %}
+            <a href="{% url 'orders:create_order' %}"><button class="btn btn-primary">Сделать заказ</button></a>
+        </div>
+    </div>
 {% endblock %}
