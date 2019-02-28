@@ -106,9 +106,9 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = 'profiles.User'
 
-LOGIN_REDIRECT_URL = 'products:product_list'
+LOGIN_REDIRECT_URL = 'products:list'
 
-LOGOUT_REDIRECT_URL = 'products:product_list'
+LOGOUT_REDIRECT_URL = 'products:list'
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/

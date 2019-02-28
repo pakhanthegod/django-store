@@ -15,7 +15,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('products:product_list', kwargs={'category': self.slug})
+        return reverse('products:list', kwargs={'category': self.slug})
 
 
 class Brand(models.Model):
@@ -37,7 +37,7 @@ class Product(models.Model):
     price = models.DecimalField(_('Цена'), max_digits=10, decimal_places=2)
     quantity = models.IntegerField(_('Количество'), default=20)
     available = models.BooleanField(_('Доступен'), default=True)
-    image = models.ImageField(_('Изображение'), upload_to='products')
+    image = models.ImageField(_('Изображение'), upload_to='products', default='default/image.png')
 
     class Meta:
         verbose_name = 'Товар'
@@ -47,4 +47,4 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('products:product_detail', kwargs={'category': self.category.slug, 'pk': self.pk})
+        return reverse('products:detail', kwargs={'category': self.category.slug, 'pk': self.pk})

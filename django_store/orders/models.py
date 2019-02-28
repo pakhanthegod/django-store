@@ -31,7 +31,7 @@ class Order(models.Model):
         return str(self.id)
 
     def get_absolute_url(self):
-        return reverse('orders:order_detail', kwargs={"pk": self.pk})
+        return reverse('orders:detail', kwargs={"pk": self.pk})
 
     def get_total(self):
         return (

@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View, TemplateResponseMixin, ContextMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.detail import SingleObjectMixin
@@ -9,7 +9,7 @@ from .models import Product, Category
 class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
     model = Product
     template_name = 'products/product_list.html'
-    paginate_by = 9
+    paginate_by = 3
 
     def get(self, request, *args, **kwargs):
         self.object_list = self.get_queryset()
@@ -19,20 +19,22 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        category = self.kwargs.get('category', '')
-        search_query = self.request.GET.get('search', '')
+        category_raw = self.kwargs.get('category')
+        search_query = self.request.GET.get('q')
 
         if search_query:
-            return queryset.filter(name__istartswith=search_query)
+            return queryset.filter(name__icontains=search_query)
 
-        if not category:
-            return queryset
+        if category_raw:
+            category = get_object_or_404(Category, slug=category_raw)
+            return queryset.filter(category=category)
 
-        return queryset.filter(category__slug=category)
+        return queryset
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['categories'] = Category.objects.all()
+        context['category'] = self.kwargs.get('category')
 
         return context
 
