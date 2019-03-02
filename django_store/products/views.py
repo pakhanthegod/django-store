@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.views.generic.base import View, TemplateResponseMixin, ContextMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.detail import SingleObjectMixin
@@ -21,13 +22,24 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
         queryset = super().get_queryset()
         category_raw = self.kwargs.get('category')
         search_query = self.request.GET.get('q')
+        sort = self.request.GET.get('sort')
 
         if search_query:
             return queryset.filter(name__icontains=search_query)
 
         if category_raw:
             category = get_object_or_404(Category, slug=category_raw)
-            return queryset.filter(category=category)
+            queryset = queryset.filter(category=category)
+
+        if sort:
+            if sort == 'priceup':
+                queryset = queryset.order_by('price')
+            if sort == 'pricedown':
+                queryset = queryset.order_by('-price')
+            if sort == 'nameup':
+                queryset = queryset.order_by('name')
+            if sort == 'namedown':
+                queryset = queryset.order_by('-name')
 
         return queryset
 
@@ -37,6 +49,26 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
         context['category'] = self.kwargs.get('category')
 
         return context
+
+    def get_price_sort_url(self):
+        BASE_URL = reverse('products:list_all')
+
+        mapping = {
+            'priceup': BASE_URL + '?sort=pricedown',
+            'pricedown': BASE_URL + '?sort=priceup',
+        }
+
+        return mapping.get(self.request.GET.get('sort'), BASE_URL + '?sort=pricedown')
+
+    def get_name_sort_url(self):
+        BASE_URL = reverse('products:list_all')
+
+        mapping = {
+            'nameup': BASE_URL + '?sort=namedown',
+            'namedown': BASE_URL + '?sort=nameup',
+        }
+
+        return mapping.get(self.request.GET.get('sort'), BASE_URL + '?sort=namedown')
 
 
 class ProductDetailView(SingleObjectMixin, TemplateResponseMixin, View):

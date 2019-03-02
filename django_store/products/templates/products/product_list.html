@@ -12,6 +12,11 @@
             </div>
         </div>
         <div class="col-md-9">
+            <div class="col border rounded">
+                <span>Сортировать по: </span>
+                <a href="{{ view.get_price_sort_url }}">Цене</a>
+                <a href="{{ view.get_name_sort_url }}">Названию</a>
+            </div>
             {% for product in object_list %}
                 {% if forloop.first %}
                     <div class="card-columns">
