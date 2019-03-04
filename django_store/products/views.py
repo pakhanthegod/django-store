@@ -10,6 +10,7 @@ from .models import Product, Category
 class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
     model = Product
     template_name = 'products/product_list.html'
+    allow_empty = True
     paginate_by = 3
 
     def get(self, request, *args, **kwargs):
@@ -45,13 +46,22 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
         context['categories'] = Category.objects.all()
         context['category'] = self.kwargs.get('category')
 
         return context
 
+    def get_sort_base_url(self):
+        category = self.kwargs.get('category')
+
+        if category:
+            return reverse('products:list', kwargs={'category': category})
+        else:
+            return reverse('products:list_all')
+
     def get_price_sort_url(self):
-        BASE_URL = reverse('products:list_all')
+        BASE_URL = self.get_sort_base_url()
 
         mapping = {
             'priceup': BASE_URL + '?sort=pricedown',
@@ -61,7 +71,7 @@ class ProductListView(MultipleObjectMixin, TemplateResponseMixin, View):
         return mapping.get(self.request.GET.get('sort'), BASE_URL + '?sort=pricedown')
 
     def get_name_sort_url(self):
-        BASE_URL = reverse('products:list_all')
+        BASE_URL = self.get_sort_base_url()
 
         mapping = {
             'nameup': BASE_URL + '?sort=namedown',

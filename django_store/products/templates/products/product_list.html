@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load templatetags %}
 
 {% block content %}
     <div class="row">
@@ -17,39 +18,66 @@
                 <a href="{{ view.get_price_sort_url }}">Цене</a>
                 <a href="{{ view.get_name_sort_url }}">Названию</a>
             </div>
-            {% for product in object_list %}
-                {% if forloop.first %}
-                    <div class="card-columns">
-                {% endif %}
-                <a href="{% url 'products:detail' product.category.slug product.id %}">
-                    <div class="card" style="width: 18rem;">
-                        <img src="{{ product.image.url }}" class="card-img-top" alt="...">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ product.name }}</h5>
-                            <p class="card-text">Цена: {{ product.price }} &#8381;</p>
-                            {% if user.is_authenticated %}
-                                <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary mt-2">Добавить в корзину</a>
-                            {% endif %}
+            {% if ordered_list %}
+                {% for product in ordered_list %}
+                    {% if forloop.first %}
+                        <div class="card-columns">
+                    {% endif %}
+                    <a href="{% url 'products:detail' product.category.slug product.id %}">
+                        <div class="card" style="width: 18rem;">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Цена: {{ product.price }} &#8381;</p>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary mt-2">Добавить в корзину</a>
+                                {% endif %}
+                            </div>
                         </div>
-                    </div>
-                </a>
-                {% if forloop.counter|divisibleby:3 %}
-                    </div>
-                    <div class="card-columns">
-                {% endif %}
-                {% if forloop.last %}
-                    </div>
-                {% endif %}
-            {% endfor %}
+                    </a>
+                    {% if forloop.counter|divisibleby:3 %}
+                        </div>
+                        <div class="card-columns">
+                    {% endif %}
+                    {% if forloop.last %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                {% for product in object_list %}
+                    {% if forloop.first %}
+                        <div class="card-columns">
+                    {% endif %}
+                    <a href="{% url 'products:detail' product.category.slug product.id %}">
+                        <div class="card" style="width: 18rem;">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="...">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">Цена: {{ product.price }} &#8381;</p>
+                                {% if user.is_authenticated %}
+                                    <a href="{% url 'orders:add_to_cart' product.id %}" class="btn btn-primary mt-2">Добавить в корзину</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </a>
+                    {% if forloop.counter|divisibleby:3 %}
+                        </div>
+                        <div class="card-columns">
+                    {% endif %}
+                    {% if forloop.last %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
             {% if is_paginated %}
             <div class="col d-flex justify-content-center align-items-center">
                     {% if page_obj.has_previous %}
                         {% if category %}
-                            <a href="{% url 'products:list_page' category=category page=1 %}" class="btn btn-primary">&laquo; Первая</a>
-                            <a href="{% url 'products:list_page' category=category page=page_obj.previous_page_number %}" class="btn btn-primary ml-2">Предыдущая</a>
+                            <a href="{% url 'products:list_page' category=category page=1 %}{% query_transform %}" class="btn btn-primary">&laquo; Первая</a>
+                            <a href="{% url 'products:list_page' category=category page=page_obj.previous_page_number %}{% query_transform %}" class="btn btn-primary ml-2">Предыдущая</a>
                         {% else %}
-                            <a href="{% url 'products:list_all_page' page=1 %}" class="btn btn-primary">&laquo; В начало</a>
-                            <a href="{% url 'products:list_all_page' page=page_obj.previous_page_number %}" class="btn btn-primary ml-2">Предыдущая</a>
+                            <a href="{% url 'products:list_all_page' page=1 %}{% query_transform %}" class="btn btn-primary">&laquo; В начало</a>
+                            <a href="{% url 'products:list_all_page' page=page_obj.previous_page_number %}{% query_transform %}" class="btn btn-primary ml-2">Предыдущая</a>
                         {% endif %}
                     {% endif %}
             
@@ -59,11 +87,11 @@
             
                     {% if page_obj.has_next %}
                         {% if category %}
-                            <a href="{% url 'products:list_page' category=category page=page_obj.next_page_number %}" class="btn btn-primary mr-2">Следующая</a>
-                            <a href="{% url 'products:list_page' category=category page=page_obj.paginator.num_pages %}" class="btn btn-primary">Последняя &raquo;</a>
+                            <a href="{% url 'products:list_page' category=category page=page_obj.next_page_number %}{% query_transform %}" class="btn btn-primary mr-2">Следующая</a>
+                            <a href="{% url 'products:list_page' category=category page=page_obj.paginator.num_pages %}{% query_transform %}" class="btn btn-primary">Последняя &raquo;</a>
                         {% else %}
-                            <a href="{% url 'products:list_all_page' page=page_obj.next_page_number %}" class="btn btn-primary mr-2">Следующая</a>
-                            <a href="{% url 'products:list_all_page' page=page_obj.paginator.num_pages %}" class="btn btn-primary">Последняя &raquo;</a>
+                            <a href="{% url 'products:list_all_page' page=page_obj.next_page_number %}{% query_transform %}" class="btn btn-primary mr-2">Следующая</a>
+                            <a href="{% url 'products:list_all_page' page=page_obj.paginator.num_pages %}{% query_transform %}" class="btn btn-primary">Последняя &raquo;</a>
                         {% endif %}
                     {% else %}
                         <span></span>
