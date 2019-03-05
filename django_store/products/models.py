@@ -48,3 +48,8 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('products:detail', kwargs={'category': self.category.slug, 'pk': self.pk})
+
+    def decrease_quantity(self, quantity):
+        self.quantity -= quantity
+        if quantity == 0:
+            self.available = False
