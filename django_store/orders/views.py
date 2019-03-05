@@ -5,9 +5,12 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.base import View, TemplateResponseMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.detail import SingleObjectMixin
+from django.db import transaction
+from django.contrib import messages
 
 from products.models import Product
 from .models import Order, OrderList
+from .forms import OrderListForm
 
 
 class AddToCart(LoginRequiredMixin, View):
@@ -47,6 +50,7 @@ class CartView(LoginRequiredMixin, MultipleObjectMixin, TemplateResponseMixin, V
     model = Product
     template_name = 'orders/cart.html'
     paginate_by = 9
+    allow_empty = True
     login_url = 'profiles:login'
 
     def get(self, request, *args, **kwargs):
@@ -80,7 +84,8 @@ class CartView(LoginRequiredMixin, MultipleObjectMixin, TemplateResponseMixin, V
 class CreateOrderView(LoginRequiredMixin, View):
     login_url = 'profiles:login'
     
-    def get(self, request, *args, **kwargs):
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
         # Populate the cart list with Product objects by IDs from the session
         cart_products = []
         for product_id in request.session['cart'].keys():
@@ -89,12 +94,17 @@ class CreateOrderView(LoginRequiredMixin, View):
 
         # Create customer's order
         order = Order.objects.create(customer=request.user.customer)
-        order.save()
 
         # Populate a customer's order with Product objects from the cart list
         for product_tuple in cart_products:
-            order_product = OrderList.objects.create(order=order, product=product_tuple[0], quantity=product_tuple[1])
-            order_product.save()
+            # order_list_item = OrderList(order=order, product=product_tuple[0], quantity=product_tuple[1])
+            order_list_form = OrderListForm({'product': product_tuple[0].pk, 'order': order.pk, 'quantity': product_tuple[1]})
+            if order_list_form.is_valid():
+                order_list_form.save()
+            else:
+                transaction.set_rollback(True)
+                messages.error(request, 'Ошибка создания заказа')
+                return redirect('orders:cart')
 
         del request.session['cart']
 

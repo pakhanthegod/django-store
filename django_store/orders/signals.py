@@ -5,6 +5,8 @@ from .models import OrderList
 
 
 @receiver(post_save, sender=OrderList)
-def decrement_products(sender, instance, created, **kwargs):
-    if created:
-        instance.product.decrease_quantity(instance.quantity)
+def decrement_products(sender, instance, **kwargs):
+    print(instance.product.decrease_quantity)
+    print(instance.quantity)
+    print('qqqq')
+    instance.product.decrease_quantity(instance.quantity)

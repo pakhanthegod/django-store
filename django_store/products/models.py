@@ -51,5 +51,6 @@ class Product(models.Model):
 
     def decrease_quantity(self, quantity):
         self.quantity -= quantity
-        if quantity == 0:
+        if self.quantity == 0:
             self.available = False
+        self.save()

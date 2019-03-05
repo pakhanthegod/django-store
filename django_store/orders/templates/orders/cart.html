@@ -11,14 +11,16 @@
                             <th>Товар</th>
                             <th>Количество</th>
                             <th>Цена</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for product_tuple in cart_products %}
                             <tr>
-                                <td><a href="{{ order_item.product.get_absolute_url }}">{{ product_tuple.0 }}</a></td>
+                                <td><a href="{{ product_tuple.0.get_absolute_url }}">{{ product_tuple.0 }}</a></td>
                                 <td>{{ product_tuple.1 }}</td>
                                 <td>{{ product_tuple.0.price }}</td>
+                                <td><a href="{% url 'orders:delete_from_cart' product_tuple.0.pk %}">Удалить</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -26,7 +28,10 @@
             {% else %}
                 <p>Ваша корзина пуста</p>
             {% endif %}
-            <a href="{% url 'orders:create' %}"><button class="btn btn-primary">Сделать заказ</button></a>
+            <form action="{% url 'orders:create' %}" method="POST">
+                {% csrf_token %}
+                <input type="submit" value="Сделать заказ" class="btn btn-primary">
+            </form>
         </div>
     </div>
 {% endblock %}
